@@ -506,7 +506,6 @@ dependencies = [
  "anyhow",
  "clap",
  "rodio",
- "walkdir",
 ]
 
 [[package]]

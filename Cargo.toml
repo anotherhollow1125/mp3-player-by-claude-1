@@ -7,4 +7,3 @@ edition = "2024"
 clap = { version = "4.0", features = ["derive"] }
 rodio = "0.17"
 anyhow = "1.0"
-walkdir = "2.0"
