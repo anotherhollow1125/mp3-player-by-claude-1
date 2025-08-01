@@ -1,5 +1,6 @@
 use anyhow::{Context, Result};
 use clap::Parser;
+use rand::seq::SliceRandom;
 use rodio::{Decoder, OutputStream, Sink};
 use std::fs::File;
 use std::io::BufReader;
@@ -16,12 +17,15 @@ struct Args {
 
     #[arg(short, long, help = "Play files recursively from subdirectories")]
     recursive: bool,
+
+    #[arg(short, long, help = "Play files in random order")]
+    shuffled: bool,
 }
 
 fn main() -> Result<()> {
     let args = Args::parse();
 
-    let mp3_files = find_mp3_files(&args.path, args.recursive)?;
+    let mut mp3_files = find_mp3_files(&args.path, args.recursive)?;
 
     if mp3_files.is_empty() {
         println!("No MP3 files found in the specified path.");
@@ -29,6 +33,14 @@ fn main() -> Result<()> {
     }
 
     println!("Found {} MP3 file(s)", mp3_files.len());
+
+    if args.shuffled {
+        let mut rng = rand::rng();
+        mp3_files.shuffle(&mut rng);
+        println!("Playing files in random order.");
+    } else {
+        println!("Playing files in order.");
+    }
 
     let (_stream, stream_handle) =
         OutputStream::try_default().context("Failed to create audio output stream")?;
